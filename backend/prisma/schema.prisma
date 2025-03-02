@@ -5,14 +5,99 @@ generator client {
 datasource db {
   provider = "mongodb"
   url      = env("DATABASE_URL")
-  // url      = "mongodb+srv://udemyrlbk:194pZhHaIVu81vox@inventorymanagementsyst.aygvc.mongodb.net/?retryWrites=true&w=majority&appName=InventoryManagementSystem"
+}
+
+enum GENDER {
+  MALE
+  FEMALE
+}
+
+enum ROLE {
+  ADMIN
+  ATTENDANT
+}
+
+enum CUSTOMER_TYPE {
+  RETAIL
+  WHOLESALE
+  DISTRIBUTOR
+  OTHER
+}
+
+enum SUPPLIER_TYPE {
+  MANUFACTURER
+  DISTRIBUTOR
+  WHOLESALER
+  RETAILER
+  OTHER
+}
+
+model User {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  email     String    @unique
+  username  String    @unique
+  password  String
+  firstName String
+  lastName  String
+  phone     String    @unique
+  dob       DateTime?
+  gender    GENDER
+  image     String?
+  role      ROLE      @default(ATTENDANT)
+  createdAt DateTime  @default(now())
+  updateAt  DateTime  @updatedAt
+  shops     Shop[]
+}
+
+model Shop {
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  name     String
+  location String
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+
+  adminId String @db.ObjectId
+  admin   User   @relation(fields: [adminId], references: [id])
+
+  attendantIds String[] @db.ObjectId
 }
 
 model Customer {
-  id       String   @id @default(auto()) @map("_id") @db.ObjectId
-  email    String   @unique
-  name     String
-  phone    String
-  createAt DateTime @default(now())
-  updateAt DateTime @updatedAt
+  id             String        @id @default(auto()) @map("_id") @db.ObjectId
+  email          String?       @unique
+  firstName      String
+  lastName       String
+  phone          String        @unique
+  gender         GENDER
+  maxCreditLimit Float
+  maxCreditDays  Int
+  taxPin         String?
+  dob            DateTime?
+  nationalId     String?       @unique
+  country        String
+  location       String
+  customerType   CUSTOMER_TYPE
+  createAt       DateTime      @default(now())
+  updateAt       DateTime      @updatedAt
+}
+
+model Supplier {
+  id                 String        @id @default(auto()) @map("_id") @db.ObjectId
+  supplierType       SUPPLIER_TYPE
+  name               String
+  contactPerson      String
+  phone              String        @unique
+  email              String?       @unique
+  location           String
+  country            String
+  website            String?
+  taxPin             String?
+  registrationNumber String?       @unique
+  bankAccountNumber  String?
+  bankName           String?
+  logo               String?
+  rating             Float?
+  notes              String?
+  createAt           DateTime      @default(now())
+  updateAt           DateTime      @updatedAt
 }

@@ -2,7 +2,8 @@ import cors from "cors";
 import express from "express";
 import envConfig from "./config/envConfig";
 
-import customerRoutes from "./routes/customer.route";
+import customerRoutes from "./routes/customers.route";
+import userRoutes from "./routes/users.route";
 
 const app = express();
 
@@ -19,5 +20,6 @@ app.use(express.static("public"));
 
 // routes
 app.use("/api/v1/customers", customerRoutes);
+app.use("/api/v1/users", userRoutes);
 
 export { app };

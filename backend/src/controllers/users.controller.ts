@@ -61,3 +61,66 @@ export const createUser = asyncHandler(async (req: Request, res: Response) => {
     });
   }
 });
+
+export const getUsers = asyncHandler(async (req: Request, res: Response) => {
+  try {
+    const users = await db.user.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+      select: {
+        id: true,
+        email: true,
+        username: true,
+        phone: true,
+        firstName: true,
+        lastName: true,
+        image: true,
+        gender: true,
+        dob: true,
+      },
+    });
+    res.status(200).json({
+      success: true,
+      data: users,
+    });
+  } catch (error) {
+    console.log(error, "@Get users");
+    res.status(500).json({
+      success: false,
+      message: "Something went wrong",
+    });
+  }
+});
+
+export const getUserById = asyncHandler(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const user = await db.user.findUnique({
+      where: {
+        id,
+      },
+      select: {
+        id: true,
+        email: true,
+        username: true,
+        phone: true,
+        firstName: true,
+        lastName: true,
+        image: true,
+        gender: true,
+        dob: true,
+      },
+    });
+    res.status(200).json({
+      success: true,
+      data: user,
+    });
+  } catch (error) {
+    console.log(error, "@Get user by id");
+    res.status(500).json({
+      success: false,
+      message: "Something went wrong",
+    });
+  }
+});

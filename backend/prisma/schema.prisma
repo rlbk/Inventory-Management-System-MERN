@@ -5,6 +5,7 @@ generator client {
 datasource db {
   provider = "mongodb"
   url      = env("DATABASE_URL")
+  // url      = "mongodb+srv://udemyrlbk:194pZhHaIVu81vox@inventorymanagementsyst.aygvc.mongodb.net/?retryWrites=true&w=majority&appName=InventoryManagementSystem"
 }
 
 model Customer {

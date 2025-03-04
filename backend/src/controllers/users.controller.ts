@@ -124,3 +124,113 @@ export const getUserById = asyncHandler(async (req: Request, res: Response) => {
     });
   }
 });
+
+export const updateUserById = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { firstName, lastName, gender, image, dob } = req.body;
+    try {
+      const userExist = await db.user.findUnique({
+        where: { id },
+      });
+      if (!userExist)
+        return res.status(404).json({
+          success: false,
+          message: "User not found",
+        });
+      const user = await db.user.update({
+        where: {
+          id,
+        },
+        data: {
+          firstName,
+          lastName,
+          gender,
+          image,
+          dob: new Date(dob),
+        },
+        select: {
+          id: true,
+          email: true,
+          username: true,
+          phone: true,
+          firstName: true,
+          lastName: true,
+          image: true,
+          gender: true,
+          dob: true,
+        },
+      });
+      res.status(200).json({
+        success: true,
+        data: user,
+      });
+    } catch (error) {
+      console.log(error, "@Update user by id");
+      res.status(500).json({
+        success: false,
+        message: "Something went wrong",
+      });
+    }
+  }
+);
+
+export const updatePasswordByUserId = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { id: userId } = req.params;
+    const { password } = req.body;
+    try {
+      const userExist = await db.user.findUnique({
+        where: { id: userId },
+      });
+      if (!userExist) {
+        return res.status(404).json({
+          success: false,
+          message: "User not found",
+        });
+      }
+      const user = await db.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          password: await bcrypt.hash(password, 10),
+        },
+      });
+
+      res.status(200).json({
+        success: true,
+        data: user,
+      });
+    } catch (error) {}
+  }
+);
+
+export const deleteUserById = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { id } = req.params;
+    try {
+      const userExist = await db.user.findUnique({
+        where: { id },
+      });
+      if (!userExist)
+        return res.status(404).json({
+          success: false,
+          message: "User not found",
+        });
+      await db.user.delete({
+        where: { id },
+      });
+      res.status(200).json({
+        success: true,
+        message: "User deleted successfully",
+      });
+    } catch (error) {
+      console.log(error, "@Delete user by id");
+      res.status(500).json({
+        success: false,
+        message: "Something went wrong",
+      });
+    }
+  }
+);

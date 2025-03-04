@@ -91,6 +91,14 @@ export const getShopAttendants = asyncHandler(
             in: existingShop.attendantIds,
           },
         },
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          image: true,
+          phone: true,
+          email: true,
+        },
       });
       res.status(200).json({
         success: true,

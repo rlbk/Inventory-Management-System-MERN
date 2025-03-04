@@ -1,6 +1,7 @@
 import {
   createUser,
   deleteUserById,
+  getAttendants,
   getUserById,
   getUsers,
   updatePasswordByUserId,
@@ -10,6 +11,7 @@ import express from "express";
 const router = express.Router();
 
 router.route("/").post(createUser).get(getUsers);
+router.route("/attendants").get(getAttendants);
 router
   .route("/:id")
   .get(getUserById)

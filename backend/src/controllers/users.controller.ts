@@ -234,3 +234,28 @@ export const deleteUserById = asyncHandler(
     }
   }
 );
+
+export const getAttendants = asyncHandler(
+  async (req: Request, res: Response) => {
+    try {
+      const users = await db.user.findMany({
+        where: {
+          role: "ATTENDANT",
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+      res.status(200).json({
+        success: true,
+        data: users,
+      });
+    } catch (error) {
+      console.log(error, "@Get attendants");
+      res.status(500).json({
+        success: false,
+        message: "Something went wrong",
+      });
+    }
+  }
+);
